@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <CheckBoxPreference
+    android:key="amazon_preference"
+    android:title="Amazon"
+    android:summary="Receive stock updates for Amazon"
+    android:defaultValue="true" />
+
+  <CheckBoxPreference
+    android:key="apple_preference"
+    android:title="Apple"
+    android:summary="Receive stock updates for Apple"
+    android:defaultValue="true" />
+
+</PreferenceScreen>
