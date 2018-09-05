@@ -1,3 +1,6 @@
+
+// File: ./index.js
+
 // import dependencies
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -10,64 +13,41 @@ const app = express();
 const pusher = new Pusher(require('./config.js'));
 const pushNotifications = new PushNotifications(require('./config.js'))
 
-// amazon stock endpoint
-app.get('/stock/amazon', (req, res) => {
+function handleStock(req, res, stock) {
     let loopCount = 0;
+    
     let sendToPusher = setInterval(() => {
         loopCount++;
-        const changePercent = randomIntFromInterval(-10,10)
-        const currentValue  = randomIntFromInterval(2000,20000);
+        const changePercent = randomIntFromInterval(-10, 10)
+        const currentValue  = randomIntFromInterval(2000, 20000);        
+        const stockName = (stock === 'amazon') ? 'Amazon' : 'Apple'
+        const price = currentValue.toString()
+
         // Send to pusher
-        pusher.trigger('stock-channel', 'Amazon', {currentValue, changePercent})
-        
+        pusher.trigger('stock-channel', stockName, {currentValue, changePercent})
+
         pushNotifications.publish(
             ['stocks'],{
             fcm: {
               notification: {
-                title: 'Amazon',
-                body: 'The new value for Amazon is: '+ currentValue.toString()
+                title: stockName,
+                body: `The new value for ${stockName} is: ${price}`
               }
             }
           }).then((publishResponse) => {
             console.log('Just published:', publishResponse.publishId);
           });
 
-
-
         if (loopCount === 5) {
           clearInterval(sendToPusher)
         }
     }, 2000);
+    
     res.json({success: 200})
-});
+}
 
-// apple stock endpoint
-app.get('/stock/apple', (req, res) => {
-    let loopCount = 0;
-    let sendToPusher = setInterval(() => {
-        loopCount++;
-        const changePercent = randomIntFromInterval(-10,10)
-        const currentValue  = randomIntFromInterval(2000,20000);
-        
-        // Send to pusher
-        pusher.trigger('stock-channel', 'Apple', {currentValue, changePercent})
-        pushNotifications.publish(
-            ['stocks'],{
-            fcm: {
-              notification: {
-                title: 'Apple',
-                body: 'The new value for Apple is: '+ currentValue.toString()
-              }
-            }
-          }).then((publishResponse) => {
-            console.log('Just published:', publishResponse.publishId);
-          });
-        if (loopCount === 5) {
-          clearInterval(sendToPusher)
-        }
-    }, 2000);
-    res.json({success: 200})
-});
+app.get('/stock/amazon', (req, res) => handleStock(req, res, 'amazon'));
+app.get('/stock/apple', (req, res) => handleStock(req, res, 'apple'));
 
 function randomIntFromInterval(min,max) {
     return Math.floor(Math.random()*(max-min+1)+min);
