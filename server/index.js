@@ -1,6 +1,3 @@
-
-// File: ./index.js
-
 // import dependencies
 const express = require('express');
 const bodyParser = require('body-parser');
