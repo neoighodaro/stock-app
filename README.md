@@ -1,5 +1,5 @@
 # Stock App
-An app that gives realtime updates on stocks
+An app that gives realtime updates on stocks. [View tutorial](https://pusher.com/tutorials/stocks-push-notifications-kotlin).
 
 ## Getting Started
 
